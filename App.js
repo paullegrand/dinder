@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Image, Animated, PanResponder } from 'react-native';
+import { StyleSheet, Button, Text, View, Dimensions, Image, Animated, PanResponder, Alert } from 'react-native';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
 import Icon from 'react-native-vector-icons/Ionicons'
+import LikeOrDislikeButton from './components/LikeOrDislikeButton';
 const Users = [
   { id: "1", uri: require('./assets/1.jpg') },
   { id: "2", uri: require('./assets/2.jpg') },
@@ -19,7 +20,8 @@ export default class App extends React.Component {
 
     this.position = new Animated.ValueXY()
     this.state = {
-      currentIndex: 0
+      currentIndex: 0,
+      sessionId: null
     }
 
     this.rotate = this.position.x.interpolate({
@@ -46,6 +48,11 @@ export default class App extends React.Component {
       outputRange: [1, 0, 0],
       extrapolate: 'clamp'
     })
+    this.zeroOpacity = this.position.x.interpolate({
+      inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
+      outputRange: [0, 0, 0],
+      extrapolate: 'clamp'
+    })
 
     this.nextCardOpacity = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
@@ -59,6 +66,7 @@ export default class App extends React.Component {
     })
 
   }
+
   UNSAFE_componentWillMount() {
     this.PanResponder = PanResponder.create({
 
@@ -72,8 +80,9 @@ export default class App extends React.Component {
         if (gestureState.dx > 120) {
           Animated.spring(this.position, {
             toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
-            useNativeDriver: true
+            useNativeDriver: false
           }).start(() => {
+            // @TODO: Add logic for liking a food
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 })
             })
@@ -82,8 +91,9 @@ export default class App extends React.Component {
         else if (gestureState.dx < -120) {
           Animated.spring(this.position, {
             toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
-            useNativeDriver: true
+            useNativeDriver: false
           }).start(() => {
+            // @TODO: Add logic for disliking a food
             this.setState({ currentIndex: this.state.currentIndex + 1 }, () => {
               this.position.setValue({ x: 0, y: 0 })
             })
@@ -93,7 +103,7 @@ export default class App extends React.Component {
           Animated.spring(this.position, {
             toValue: { x: 0, y: 0 },
             friction: 4,
-            useNativeDriver: true
+            useNativeDriver: false
           }).start()
         }
       }
@@ -103,52 +113,67 @@ export default class App extends React.Component {
   renderUsers = () => {
 
     return Users.map((item, i) => {
-
-
       if (i < this.state.currentIndex) {
         return null
       }
+      // Current card in the stack
       else if (i == this.state.currentIndex) {
 
         return (
           <Animated.View
             {...this.PanResponder.panHandlers}
-            key={item.id} style={[this.rotateAndTranslate, { height: SCREEN_HEIGHT - 120, width: SCREEN_WIDTH, padding: 10, position: 'absolute' }]}>
-            <Animated.View style={{ opacity: this.likeOpacity, transform: [{ rotate: '-30deg' }], position: 'absolute', top: 50, left: 40, zIndex: 1000 }}>
-              <Text style={{ borderWidth: 1, borderColor: 'green', color: 'green', fontSize: 32, fontWeight: '800', padding: 10 }}>LIKE</Text>
+            key={item.id}
+            style={[
+              this.rotateAndTranslate,
+              {
+                height: SCREEN_HEIGHT - 120,
+                width: SCREEN_WIDTH,
+                padding: 10,
+                position: 'absolute'
+              }
+            ]}
+          >
+            {/* Like button */}
+            <LikeOrDislikeButton
+              isLikeButton={true}
+              opacity={this.likeOpacity} />
 
-            </Animated.View>
-
-            <Animated.View style={{ opacity: this.dislikeOpacity, transform: [{ rotate: '30deg' }], position: 'absolute', top: 50, right: 40, zIndex: 1000 }}>
-              <Text style={{ borderWidth: 1, borderColor: 'red', color: 'red', fontSize: 32, fontWeight: '800', padding: 10 }}>NOPE</Text>
-
-            </Animated.View>
+            {/* Dislike Button */}
+            <LikeOrDislikeButton
+              isLikeButton={false}
+              opacity={this.dislikeOpacity} />
 
             <Image
-              style={{ flex: 1, height: null, width: null, resizeMode: 'cover', borderRadius: 20 }}
-              source={item.uri} />
-
+              style={{
+                flex: 1,
+                height: null,
+                width: null,
+                resizeMode: 'cover',
+                borderRadius: 20
+              }}
+              source={item.uri}
+            />
           </Animated.View>
         )
       }
+      // Cards below in the stack
       else {
         return (
           <Animated.View
-
             key={item.id} style={[{
               opacity: this.nextCardOpacity,
               transform: [{ scale: this.nextCardScale }],
               height: SCREEN_HEIGHT - 120, width: SCREEN_WIDTH, padding: 10, position: 'absolute'
-            }]}>
-            <Animated.View style={{ opacity: 0, transform: [{ rotate: '-30deg' }], position: 'absolute', top: 50, left: 40, zIndex: 1000 }}>
-              <Text style={{ borderWidth: 1, borderColor: 'green', color: 'green', fontSize: 32, fontWeight: '800', padding: 10 }}>LIKE</Text>
+            }]}
+          >
+            {/* Hidden buttons, but... ready for later I guess? */}
+            <LikeOrDislikeButton
+              isLikeButton={true}
+              opacity={this.zeroOpacity} />
 
-            </Animated.View>
-
-            <Animated.View style={{ opacity: 0, transform: [{ rotate: '30deg' }], position: 'absolute', top: 50, right: 40, zIndex: 1000 }}>
-              <Text style={{ borderWidth: 1, borderColor: 'red', color: 'red', fontSize: 32, fontWeight: '800', padding: 10 }}>NOPE</Text>
-
-            </Animated.View>
+            <LikeOrDislikeButton
+              isLikeButton={false}
+              opacity={this.zeroOpacity} />
 
             <Image
               style={{ flex: 1, height: null, width: null, resizeMode: 'cover', borderRadius: 20 }}
@@ -160,23 +185,85 @@ export default class App extends React.Component {
     }).reverse()
   }
 
+  requestNewSession = () => {
+    Alert.alert('Requesting to start a new session!')
+
+    // @TODO: How are we generating session IDs?
+    this.setSessionId('newSessionId')
+  }
+
+  requestJoinSession = () => {
+    Alert.alert('Requesting to join a session!')
+
+    // @TODO: Ask the user for input, and then verify that session exists before joining it
+    this.setSessionId('randomSessionId')
+  }
+
+  setSessionId = (newSessionId) => {
+    this.setState({ sessionId: newSessionId })
+  }
+
   render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <View style={{ height: 60 }}>
-
-        </View>
+    if (this.state.sessionId != null)
+    {
+      return (
         <View style={{ flex: 1 }}>
-          {this.renderUsers()}
+          <View style={{ height: 120 }}>
+  
+          </View>
+          <View style={{ flex: 1 }}>
+            {this.renderUsers()}
+          </View>
+          <View style={{ height: 120 }}>
+  
+          </View>
+  
         </View>
-        <View style={{ height: 60 }}>
+  
+      );
+    }
+    else
+    {
+      return (
+        <View style={{ flex: 1 }}>
+          <View style={{ height: 120 }}>
+  
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.title}>Welcome to Dinder!</Text>
 
+            <View style={styles.fitToContent}>
+              <Button
+                title="Start swiping"
+                onPress={this.requestNewSession}
+              />
+              <Button
+                title="Join a friend"
+                onPress={this.requestJoinSession}
+              />
+            </View>
+          </View>
+
+          <View style={{ height: 60 }}>
+  
+          </View>
+  
         </View>
-
-
-      </View>
-
-    );
+      )
+    }
   }
 }
 
+const styles = StyleSheet.create({
+  title: {
+    padding: 10,
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#e900ff',
+    textAlign: 'center'
+  },
+  fitToContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  }
+})
