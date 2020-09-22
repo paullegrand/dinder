@@ -1,0 +1,15 @@
+{
+  "name": "Dinder",
+  "version": "0.1.0",
+  "description": "Swipe right to find your dinner match!",
+  "author": null,
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "dependencies": {
+    "expo": "39.0.2",
+    "react": "16.13.1",
+    "react-native": "0.63.2",
+    "react-native-paper": "4.2.0",
+    "react-native-vector-icons": "7.1.0"
+  }
+}
