@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { Text, StyleSheet, View, Button, Alert, Image } from 'react-native';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import { LinearGradient } from 'expo-linear-gradient';
+
+// Custom Components
+import DinderGradient from './DinderGradient';
 
 const GetSession = (props) => {
   let [fontsLoaded] = useFonts({
-    'Sacramento':           require('./../assets/fonts/Sacramento.ttf'),
-    'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
-    'Raleway-LightItalic':  require('./../assets/fonts/Raleway-LightItalic.ttf')
+    'Sacramento':               require('./../assets/fonts/Sacramento.ttf'),
+    'Raleway-SemiBold':         require('./../assets/fonts/Raleway-SemiBold.ttf'),
+    'Raleway-SemiBoldItalic':   require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
   });
 
   requestNewSession = () => {
@@ -34,27 +36,19 @@ const GetSession = (props) => {
 
   return (
     <View style={{
-        flex: 1,
+      flex: 1,
     }}>
-        {/* @TODO: Add session thingy here */}
-      {/* <LinearGradient
-        colors={['rgba(0,0,0,0.8)', 'transparent']}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          height: 300,
-        }}
-        start={{
-          x: 0,
-          y: 0
-        }}
-        end={{
-            x: 1,
-            y: 1
-        }}
-    ></LinearGradient> */}
+      <DinderGradient
+        colors={['#1685F8', '#E900FF']}
+      ></DinderGradient>
+
+      <View>
+        <Text style={styles.header}>Choose one.</Text>
+      </View>
+
+      <View style={styles.sessionOptionContainer}>
+
+      </View>
     </View>
   )
 }
@@ -65,6 +59,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  header: {
+    paddingTop: 120,
+    fontSize: 24,
+    fontFamily: 'Raleway-SemiBoldItalic',
+    textAlign: 'center',
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.25)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10
+  },
+  sessionOptionContainer: {
+
+  }
 });
 
 export default GetSession;
