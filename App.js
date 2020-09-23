@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, Button, Text, View, Dimensions, Image, Animated, PanResponder, Alert } from 'react-native';
 
+import LikeOrDislikeButton from './components/LikeOrDislikeButton';
+import LinearGradient from 'react-native-linear-gradient';
+
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
-import Icon from 'react-native-vector-icons/Ionicons'
-import LikeOrDislikeButton from './components/LikeOrDislikeButton';
 const Users = [
   { id: "1", uri: require('./assets/1.jpg') },
   { id: "2", uri: require('./assets/2.jpg') },
@@ -143,16 +144,25 @@ export default class App extends React.Component {
               isLikeButton={false}
               opacity={this.dislikeOpacity} />
 
-            <Image
-              style={{
-                flex: 1,
-                height: null,
-                width: null,
-                resizeMode: 'cover',
-                borderRadius: 20
-              }}
-              source={item.uri}
-            />
+            <LinearGradient
+              colors={[
+                'red',
+                'yellow',
+                'green'
+              ]}
+              style={styles.LinearGradient}
+            >
+              <Image
+                style={{
+                  flex: 1,
+                  height: null,
+                  width: null,
+                  resizeMode: 'cover',
+                  borderRadius: 20
+                }}
+                source={item.uri}
+              />
+            </LinearGradient>
           </Animated.View>
         )
       }
@@ -265,5 +275,11 @@ const styles = StyleSheet.create({
   fitToContent: {
     flexDirection: 'row',
     justifyContent: 'space-around'
-  }
+  },
+  linearGradient: {
+    flex: 1,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 5
+  },
 })
