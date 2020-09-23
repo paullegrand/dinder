@@ -11,7 +11,7 @@ const StartPage = (props) => {
     'Raleway-LightItalic':  require('./../assets/fonts/Raleway-LightItalic.ttf')
   });
 
-  requestGetSession = () => {
+  let requestGetSession = () => {
     props.startHandler()
   }
 
