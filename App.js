@@ -12,6 +12,7 @@ import GetSession           from './components/GetSession';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
+
 const Users = [
   { id: "1", uri: require('./assets/images/1.jpg') },
   { id: "2", uri: require('./assets/images/2.jpg') },

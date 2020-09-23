@@ -1,33 +1,37 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, Button, Alert, Image } from 'react-native';
+import { Text, StyleSheet, View, Button, Alert, Image, Dimensions, TouchableHighlight } from 'react-native';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 
 // Custom Components
 import DinderGradient from './DinderGradient';
+import NewSessionOption from './NewSessionOption';
+
+const SCREEN_WIDTH = Dimensions.get('window').width
 
 const GetSession = (props) => {
   let [fontsLoaded] = useFonts({
-    'Sacramento':               require('./../assets/fonts/Sacramento.ttf'),
-    'Raleway-SemiBold':         require('./../assets/fonts/Raleway-SemiBold.ttf'),
     'Raleway-SemiBoldItalic':   require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
   });
 
-  requestNewSession = () => {
+  const requestNewSession = () => {
     Alert.alert('Requesting to start a new session!')
 
-    // @TODO: How are we generating session IDs?
-    setSessionId('newSessionId')
+    setTimeout(() => {
+      setSessionId('newSessionId')
+    }, 1000)
   }
 
-  requestJoinSession = () => {
+  const requestJoinSession = () => {
     Alert.alert('Requesting to join a session!')
 
     // @TODO: Ask the user for input, and then verify that session exists before joining it
-    setSessionId('randomSessionId')
+    setTimeout(() => {
+      setSessionId('joiningSession')
+    }, 500)
   }
 
-  setSessionId = (newSessionId) => {
+  const setSessionId = (newSessionId) => {
     props.sessionHandler({ sessionId: newSessionId })
   }
 
@@ -46,9 +50,25 @@ const GetSession = (props) => {
         <Text style={styles.header}>Choose one.</Text>
       </View>
 
-      <View style={styles.sessionOptionContainer}>
+      <TouchableHighlight
+        style={styles.sessionOptionContainer}
+        onPress={requestJoinSession}
+      >
+        <NewSessionOption
+          topText={'_ _ _ _'}
+          bottomText={'Enter the 4-letter code to join an existing group'}
+        />
+      </TouchableHighlight>
 
-      </View>
+      <TouchableHighlight
+        style={styles.sessionOptionContainer}
+        onPress={requestNewSession}
+      >
+        <NewSessionOption
+          topText={'Create Group'}
+          bottomText={'Create a new group and invite your friends'}
+        />
+      </TouchableHighlight>
     </View>
   )
 }
@@ -67,11 +87,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
     textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 10
+    textShadowRadius: 10,
   },
   sessionOptionContainer: {
-
-  }
+    marginHorizontal: 25,
+    marginTop: 45,
+    position: 'relative',
+    width: SCREEN_WIDTH,
+    height: 150,
+  },
 });
 
 export default GetSession;
