@@ -1,29 +1,38 @@
 import React from 'react';
-import { StyleSheet, Button, Text, View, Dimensions, Image, Animated, PanResponder, Alert } from 'react-native';
+// Library Components
+import { StyleSheet, Button, Text, View, Dimensions, Image, Animated, PanResponder, Alert }   from 'react-native';
+import { LinearGradient }                                                                     from 'expo-linear-gradient';
+import { AppLoading }                                                                         from 'expo';
+import { useFonts }                                                                           from 'expo-font';
 
-import LikeOrDislikeButton from './components/LikeOrDislikeButton';
-import LinearGradient from 'react-native-linear-gradient';
+// Custom Components
+import LikeOrDislikeButton  from './components/LikeOrDislikeButton';
+import StartPage            from './components/StartPage';
+import GetSession           from './components/GetSession';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
 const Users = [
-  { id: "1", uri: require('./assets/1.jpg') },
-  { id: "2", uri: require('./assets/2.jpg') },
-  { id: "3", uri: require('./assets/3.jpg') },
-  { id: "4", uri: require('./assets/4.jpg') },
-  { id: "5", uri: require('./assets/5.jpg') },
+  { id: "1", uri: require('./assets/images/1.jpg') },
+  { id: "2", uri: require('./assets/images/2.jpg') },
+  { id: "3", uri: require('./assets/images/3.jpg') },
+  { id: "4", uri: require('./assets/images/4.jpg') },
+  { id: "5", uri: require('./assets/images/5.jpg') },
 ]
 
 export default class App extends React.Component {
-
   constructor() {
     super()
 
     this.position = new Animated.ValueXY()
+
     this.state = {
       currentIndex: 0,
-      sessionId: null
+      sessionId: null,
+      showStart: true,
     }
+
+    this.sessionHandler = this.sessionHandler.bind(this)
 
     this.rotate = this.position.x.interpolate({
       inputRange: [-SCREEN_WIDTH /2 ,0, SCREEN_WIDTH /2],
@@ -144,14 +153,14 @@ export default class App extends React.Component {
               isLikeButton={false}
               opacity={this.dislikeOpacity} />
 
-            <LinearGradient
+            {/* <LinearGradient
               colors={[
                 'red',
                 'yellow',
                 'green'
               ]}
               style={styles.LinearGradient}
-            >
+            > */}
               <Image
                 style={{
                   flex: 1,
@@ -162,7 +171,7 @@ export default class App extends React.Component {
                 }}
                 source={item.uri}
               />
-            </LinearGradient>
+            {/* </LinearGradient> */}
           </Animated.View>
         )
       }
@@ -195,83 +204,59 @@ export default class App extends React.Component {
     }).reverse()
   }
 
-  requestNewSession = () => {
-    Alert.alert('Requesting to start a new session!')
-
-    // @TODO: How are we generating session IDs?
-    this.setSessionId('newSessionId')
+  sessionHandler = ({ sessionId }) => {
+    this.setState({
+      sessionId: sessionId
+    })
   }
 
-  requestJoinSession = () => {
-    Alert.alert('Requesting to join a session!')
-
-    // @TODO: Ask the user for input, and then verify that session exists before joining it
-    this.setSessionId('randomSessionId')
-  }
-
-  setSessionId = (newSessionId) => {
-    this.setState({ sessionId: newSessionId })
+  startHandler = () => {
+    this.setState({
+      showStart: false
+    })
   }
 
   render() {
-    if (this.state.sessionId != null)
+    // Initial state. Show the start page, and then choose session
+    if (this.state.sessionId === null)
     {
-      return (
-        <View style={{ flex: 1 }}>
-          <View style={{ height: 120 }}>
-  
-          </View>
-          <View style={{ flex: 1 }}>
-            {this.renderUsers()}
-          </View>
-          <View style={{ height: 120 }}>
-  
-          </View>
-  
-        </View>
-  
-      );
+      // Show the start page? Or go to the choose session page?
+      if (this.state.showStart)
+      {
+        return (
+          <StartPage
+            startHandler={this.startHandler}
+          />
+        )
+      }
+      else {
+        // @TODO: Add choose session page
+        return (
+          <GetSession
+            sessionHandler={this.sessionHandler}
+          />
+        )
+      }
     }
+    // Have a session ID... let's get swiping!
     else
     {
       return (
         <View style={{ flex: 1 }}>
-          <View style={{ height: 120 }}>
-  
-          </View>
+          <View style={{ height: 120 }}></View>
+
           <View style={{ flex: 1 }}>
-            <Text style={styles.title}>Welcome to Dinder!</Text>
-
-            <View style={styles.fitToContent}>
-              <Button
-                title="Start swiping"
-                onPress={this.requestNewSession}
-              />
-              <Button
-                title="Join a friend"
-                onPress={this.requestJoinSession}
-              />
-            </View>
+            {this.renderUsers()}
           </View>
 
-          <View style={{ height: 60 }}>
-  
-          </View>
-  
+          <View style={{ height: 120 }}></View>
         </View>
-      )
+      );
     }
   }
 }
 
 const styles = StyleSheet.create({
-  title: {
-    padding: 10,
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#e900ff',
-    textAlign: 'center'
-  },
   fitToContent: {
     flexDirection: 'row',
     justifyContent: 'space-around'
