@@ -97,12 +97,11 @@ const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
           restDisplacementThreshold: 200,
           useNativeDriver: true
         }).start(() => {
-          handleSwipe(foodItems[currentIndex].key, true)
-          setCurrentIndex(currentIndex + 1)
+          handleSwipe(true)
           pan.setValue({ x: 0, y: 0 })
         })
       }
-      // Swipe right
+      // Swipe left
       else if (gestureState.dx < -120) {
         Animated.spring(pan, {
           toValue: { x: -SCREEN_WIDTH - 120, y: gestureState.dy },
@@ -110,8 +109,7 @@ const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
           restDisplacementThreshold: 200,
           useNativeDriver: true
         }).start(() => {
-          handleSwipe(foodItems[currentIndex].key, false)
-          setCurrentIndex(currentIndex + 1)
+          handleSwipe(false)
           pan.setValue({ x: 0, y: 0 })
         })
       }
@@ -126,12 +124,27 @@ const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
     }
   })
 
-  const handleSwipe = useCallback((key: string, swipedRight: boolean) => swipeFood({ key, swipedRight }), [swipeFood])
+  const handleSwipe = useCallback((swipedRight: boolean) => {
+    if (foodItems && foodItems[currentIndex]) {
+      swipeFood({ key: foodItems[currentIndex].key, swipedRight })
+      setCurrentIndex(currentIndex + 1)
+    }
+  }, [swipeFood,currentIndex, setCurrentIndex])
+
+  const handleRewind = useCallback(() => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      swipeFood({ key: foodItems[newIndex].key, swipedRight: false })
+      setCurrentIndex(newIndex)
+    }
+  }, [currentIndex, setCurrentIndex])
 
   return (
     <View style={styles.container}>
       <SwipeButtons
         currentIndex={currentIndex}
+        onSwipe={handleSwipe}
+        onRewind={handleRewind}
       />
 
       {foodItems && foodItems.length > 0 && (foodItems[currentIndex]) &&

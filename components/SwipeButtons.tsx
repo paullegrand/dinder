@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useFonts } from 'expo-font'
 import { Alert, Dimensions, StyleSheet, TouchableHighlight, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
@@ -7,28 +7,30 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 interface Props {
   currentIndex: number;
+  onSwipe: (swipedRight: boolean) => void;
+  onRewind: () => void;
 }
 
-const SwipeButtons = ({ currentIndex }: Props) => {
+const SwipeButtons = ({ currentIndex, onSwipe, onRewind }: Props) => {
   let [fontsLoaded] = useFonts({
     'Raleway':                  require('./../assets/fonts/Raleway-Regular.ttf'),
     'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
   });
 
-  const rewind = () => {
+  const rewind = useCallback(() => {
     if (!rewindEnabled)
       return
 
-    Alert.alert('SEND IT BACK')
-  }
+    onRewind()
+  }, [onRewind])
 
-  const swipeLeft = () => {
-    Alert.alert('Nah, not feelin it')
-  }
+  const swipeLeft = useCallback(() => {
+    onSwipe(false)
+  }, [onSwipe])
 
-  const swipeRight = () => {
-    Alert.alert('Swiped right!')
-  }
+  const swipeRight = useCallback(() => {
+    onSwipe(true)
+  }, [onSwipe])
 
   let rewindEnabled   = (currentIndex !== 0)
   const buttonSize    = 28
