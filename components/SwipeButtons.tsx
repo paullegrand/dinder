@@ -16,6 +16,9 @@ const SwipeButtons = ({ currentIndex }: Props) => {
   });
 
   const rewind = () => {
+    if (!rewindEnabled)
+      return
+
     Alert.alert('SEND IT BACK')
   }
 
