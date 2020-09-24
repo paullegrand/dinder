@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { AppLoading } from 'expo';
-import { useFonts } from 'expo-font';
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
 // @ts-ignore: No declaration for .js file
 import { getFoodRequested } from '../ducks/food';
@@ -18,15 +16,6 @@ const SplashScreen = ({ loadFood }: Props) => {
     loadFood();
   }, [])
   
-  const [fontsLoaded] = useFonts({
-    'Sacramento': require('./../assets/fonts/Sacramento.ttf'),
-    'Raleway-SemiBold': require('./../assets/fonts/Raleway-SemiBold.ttf'),
-    'Raleway-LightItalic': require('./../assets/fonts/Raleway-LightItalic.ttf')
-  });
-
-  if (!fontsLoaded)
-    return <AppLoading />
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ height: 60 }}></View>

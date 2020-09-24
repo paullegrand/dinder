@@ -1,6 +1,4 @@
 import React, { useCallback } from 'react';
-import { AppLoading } from 'expo';
-import { useFonts } from 'expo-font';
 import { connect } from 'react-redux';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DinderGradient from '../components/DinderGradient';
@@ -16,10 +14,6 @@ interface Props {
 }
 
 const SessionScreen = ({ joinSession, createSession }: Props) => {
-  let [fontsLoaded] = useFonts({
-    'Raleway-SemiBoldItalic': require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
-  });
-
   // @TODO: show the user the code so they can share it before continuing
   const requestNewSession = useCallback(() => {
     createSession()
@@ -28,9 +22,6 @@ const SessionScreen = ({ joinSession, createSession }: Props) => {
   const requestJoinSession = useCallback((sessionId: string) => {
     joinSession(sessionId)
   }, [joinSession])
-
-  if (!fontsLoaded)
-    return <AppLoading />
 
   return (
     <View style={{

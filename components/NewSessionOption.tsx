@@ -1,7 +1,5 @@
 import React, { useCallback } from 'react';
-import { AppLoading } from 'expo';
-import { useFonts } from 'expo-font';
-import { Alert, Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -13,10 +11,6 @@ interface Props {
 }
 
 const NewSessionOption = ({ isInput, topText, bottomText, joinSession }: Props) => {
-  let [fontsLoaded] = useFonts({
-    'Raleway':                  require('./../assets/fonts/Raleway-Regular.ttf'),
-    'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
-  });
 
   const onChangeText = useCallback((text: string) => {
     // Make sure we're at a valid code before we try to do something
@@ -25,9 +19,6 @@ const NewSessionOption = ({ isInput, topText, bottomText, joinSession }: Props) 
     if (joinSession !== undefined)
       joinSession(text);
   }, [joinSession])
-
-  if (!fontsLoaded)
-    return <AppLoading />
 
   return (
     <View>
@@ -68,7 +59,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 10,
-    elevation: 6,
   },
   sessionOptionBottom: {
     paddingTop: 30,
@@ -87,7 +77,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 15,
-    elevation: 5,
   },
   sessionOptionTextTop: {
     fontFamily: 'Raleway-SemiBold',

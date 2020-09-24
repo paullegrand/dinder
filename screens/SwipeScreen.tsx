@@ -1,23 +1,21 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
+import { Animated, Dimensions, Image, PanResponder, StyleSheet, View } from 'react-native';
+import FoodCard from '../components/FoodCard';
+import DinderGradient from '../components/DinderGradient';
+import SwipeButtons from '../components/SwipeButtons'
 // @ts-ignore: No declaration for .js file
 import { swipeRequested } from '../ducks/session';
 // @ts-ignore: No declaration for .js file
 import { selectFoodItems } from '../ducks/food';
-import { getFirebaseImageUrl } from '../utils/getFirebaseImageUrl'
 import { FoodItem } from '../models/FoodItem';
-
-import DinderGradient       from '../components/DinderGradient';
-import LikeOrDislikeButton  from '../components/LikeOrDislikeButton';
-import SwipeButtons         from '../components/SwipeButtons'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
 
 interface Props {
   foodItems: Array<FoodItem>;
-  swipeFood: ({ key, swipedRight }: { key: string, swipedRight: boolean}) => void;
+  swipeFood: ({ key, swipedRight }: { key: string, swipedRight: boolean }) => void;
 }
 
 const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
@@ -86,7 +84,7 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
       // Swipe right
       if (gestureState.dx > 120) {
         Animated.spring(pan, {
-          toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
+          toValue: { x: SCREEN_WIDTH + 120, y: gestureState.dy },
           useNativeDriver: true
         }).start(() => {
           // @TODO: Add logic for liking a food
@@ -97,7 +95,7 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
       // Swipe right
       else if (gestureState.dx < -120) {
         Animated.spring(pan, {
-          toValue: { x: -SCREEN_WIDTH - 100, y: gestureState.dy },
+          toValue: { x: -SCREEN_WIDTH - 120, y: gestureState.dy },
           useNativeDriver: true
         }).start(() => {
           // @TODO: Add logic for disliking a food
@@ -133,54 +131,29 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
           }}
         />
       }
-      
-      {foodItems && foodItems.map(({ key, name, emoji, flavorText, imageToken, colors }, i) => {
-        if (i < currentIndex) return null
-        const source = { uri: getFirebaseImageUrl(key, imageToken) };
 
-        // Current card in the stack
-        if (i == currentIndex) {
-          return (
-            <Animated.View
-              {...panResponder.panHandlers}
-              key={key}
-              style={{ ...styles.card, ...currentCardStyle }}
-            >
-              {/* Like button */}
-              <LikeOrDislikeButton
-                isLikeButton={true}
-                opacity={likeOpacity} />
-              {/* Dislike Button */}
-              <LikeOrDislikeButton
-                isLikeButton={false}
-                opacity={dislikeOpacity} />
-              <Image
-                style={styles.image}
-                source={source} />
-            </Animated.View>
-          )
-        }
-        // Cards below in the stack
-        else {
-          return (
-            <Animated.View
-              key={key}
-              style={{ ...styles.card, ...nextCardStyle }}
-            >
-              {/* Hidden buttons, but... ready for later I guess? */}
-              <LikeOrDislikeButton
-                isLikeButton={true}
-                opacity={zeroOpacity} />
-              <LikeOrDislikeButton
-                isLikeButton={false}
-                opacity={zeroOpacity} />
-              <Image
-                style={styles.image}
-                source={source} />
-            </Animated.View>
-          )
-        }
-      }).reverse()}
+      {foodItems[currentIndex + 1] && (
+        // The "next" card to pre-render below the current card
+        <Animated.View style={{ ...styles.card, ...nextCardStyle }}>
+          <FoodCard
+            likeOpacity={zeroOpacity}
+            dislikeOpacity={zeroOpacity}
+            food={foodItems[currentIndex + 1]}
+          />
+        </Animated.View>
+      )}
+
+      {foodItems[currentIndex] && (
+        // The current card
+        <Animated.View style={{ ...styles.card, ...currentCardStyle }}>
+          <FoodCard
+            {...panResponder.panHandlers}
+            likeOpacity={likeOpacity}
+            dislikeOpacity={dislikeOpacity}
+            food={foodItems[currentIndex]}
+          />
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -193,17 +166,11 @@ const styles = StyleSheet.create({
   },
   card: {
     position: 'absolute',
-  },
-  image: {
-    resizeMode: 'cover',
-    borderRadius: 20,
-    height: 300,
-    width: 300,
-  },
+  }
 });
 
-const mapStateToProps = (state: object) =>({
-  foodItems: selectFoodItems(state), 
+const mapStateToProps = (state: object) => ({
+  foodItems: selectFoodItems(state),
 })
 
 const mapDispatchToProps = {
