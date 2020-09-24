@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
+import DinderGradient from '../components/DinderGradient';
 import LikeOrDislikeButton from '../components/LikeOrDislikeButton';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
@@ -7,11 +8,31 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 // temporary until we incorporate Firebase
 const foods = [
-  { id: "1", uri: require('../assets/images/1.jpg') },
-  { id: "2", uri: require('../assets/images/2.jpg') },
-  { id: "3", uri: require('../assets/images/3.jpg') },
-  { id: "4", uri: require('../assets/images/4.jpg') },
-  { id: "5", uri: require('../assets/images/5.jpg') },
+  {
+    id: "1",
+    uri: require('../assets/images/1.jpg'),
+    colors: [ '#040404', '#b16931', '#5f2f0f', '#7c5c38', '#343434' ],
+  },
+  {
+    id: "2",
+    uri: require('../assets/images/2.jpg'),
+    colors: [ '#373745', '#c3b5a7', '#7b6872', '#847ea0', '#8e977b' ],
+  },
+  {
+    id: "3",
+    uri: require('../assets/images/3.jpg'),
+    colors: [ '#e5ad35', '#cfd7d8', '#166689', '#a06e2e', '#7a4b1a' ],
+  },
+  {
+    id: "4",
+    uri: require('../assets/images/4.jpg'),
+    colors: [ '#211e1f', '#a59387', '#674234', '#7b8d94', '#677390' ],
+  },
+  {
+    id: "5",
+    uri: require('../assets/images/5.jpg'),
+    colors: [ '#efeee8', '#e79b2b', '#3d4214', '#b75109', '#dcbc83' ],
+  },
 ]
 
 // TODO: connect redux so we can dispatch actions
@@ -113,6 +134,16 @@ const SwipeScreen = () => {
 
   return (
     <View style={styles.container}>
+
+      {(foods[currentIndex]) &&
+        <DinderGradient
+          colors={foods[currentIndex].colors}
+          style={{
+            flex: 1
+          }}
+        />
+      }
+
       {foods.map((food, i) => {
         if (i < currentIndex) return null
 
@@ -132,18 +163,9 @@ const SwipeScreen = () => {
               <LikeOrDislikeButton
                 isLikeButton={false}
                 opacity={dislikeOpacity} />
-              {/* <LinearGradient
-                colors={[
-                  'red',
-                  'yellow',
-                  'green'
-                ]}
-                style={styles.LinearGradient}
-              > */}
               <Image
                 style={styles.image}
                 source={food.uri} />
-              {/* </LinearGradient> */}
             </Animated.View>
           )
         }
