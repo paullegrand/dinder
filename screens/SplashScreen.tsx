@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Text, StyleSheet, View, Button, Alert, Image } from 'react-native';
+import * as React from 'react';
+import { Text, StyleSheet, View, Button, Image } from 'react-native';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 
-const StartPage = (props) => {
+export const SplashScreen = (props) => {
   let [fontsLoaded] = useFonts({
     'Sacramento':           require('./../assets/fonts/Sacramento.ttf'),
     'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
@@ -38,7 +37,7 @@ const StartPage = (props) => {
             Swipe right on the foods you're interested in, and we'll find a match.
         </Text>
 
-        <View style={styles.fitToContent}>
+        <View>
           <Button
             title="Start swiping"
             onPress={requestGetSession}
@@ -88,5 +87,3 @@ const styles = StyleSheet.create({
     resizeMode: 'center'
   }
 });
-
-export default StartPage;

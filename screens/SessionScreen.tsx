@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Text, StyleSheet, View, Button, Alert, Image, Dimensions, TouchableHighlight } from 'react-native';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 
 // Custom Components
-import DinderGradient from './DinderGradient';
-import NewSessionOption from './NewSessionOption';
+import DinderGradient from '../components/DinderGradient';
+import NewSessionOption from '../components/NewSessionOption';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const GetSession = (props) => {
+export const SessionScreen = (props) => {
   let [fontsLoaded] = useFonts({
     'Raleway-SemiBoldItalic':   require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
   });
@@ -31,7 +31,7 @@ const GetSession = (props) => {
     }, 500)
   }
 
-  const setSessionId = (newSessionId) => {
+  const setSessionId = (newSessionId:) => {
     props.sessionHandler({ sessionId: newSessionId })
   }
 
@@ -97,5 +97,3 @@ const styles = StyleSheet.create({
     height: 150,
   },
 });
-
-export default GetSession;

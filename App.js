@@ -1,10 +1,6 @@
 import React from 'react';
-
-// Custom Components
-import StartPage from './components/StartPage';
-import GetSession from './components/GetSession';
-
-// Screens
+import { SplashScreen } from './screens/SplashScreen';
+import { SessionScreen } from './screens/SessionScreen';
 import { SwipeScreen } from './screens/SwipeScreen';
 
 export default class App extends React.Component {
@@ -15,8 +11,6 @@ export default class App extends React.Component {
       sessionId: null,
       showStart: true,
     }
-
-    this.sessionHandler = this.sessionHandler.bind(this)
   }
 
   sessionHandler = ({ sessionId }) => {
@@ -37,7 +31,7 @@ export default class App extends React.Component {
       // Show the start page? Or go to the choose session page?
       if (this.state.showStart) {
         return (
-          <StartPage
+          <SplashScreen
             startHandler={this.startHandler}
           />
         )
@@ -45,7 +39,7 @@ export default class App extends React.Component {
       else {
         // @TODO: Add choose session page
         return (
-          <GetSession
+          <SessionScreen
             sessionHandler={this.sessionHandler}
           />
         )
