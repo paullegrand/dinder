@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { connect } from 'react-redux';
-import { Alert, Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DinderGradient from '../components/DinderGradient';
 import NewSessionOption from '../components/NewSessionOption';
 // @ts-ignore: No declaration for .js file
@@ -48,12 +48,13 @@ const SessionScreen = ({ joinSession, createSession }: Props) => {
         <NewSessionOption
           isInput={true}
           topText={'_ _ _ _'}
-          bottomText={'Enter the 4-letter code to join an existing group'}
           joinSession={requestJoinSession}
+          bottomText={'Enter a 4-letter code to join an existing group'}
         />
       </View>
 
-      <TouchableHighlight
+      <TouchableOpacity
+        activeOpacity={0.5}
         style={styles.sessionOptionContainer}
         onPress={requestNewSession}
       >
@@ -62,7 +63,7 @@ const SessionScreen = ({ joinSession, createSession }: Props) => {
           topText={'Create Group'}
           bottomText={'Create a new group and invite your friends'}
         />
-      </TouchableHighlight>
+      </TouchableOpacity>
     </View>
   )
 }

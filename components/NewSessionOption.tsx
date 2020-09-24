@@ -12,7 +12,7 @@ interface Props {
   joinSession?: (sessionId: string) => void;
 }
 
-const StartPage = ({ isInput, topText, bottomText, joinSession }: Props) => {
+const NewSessionOption = ({ isInput, topText, bottomText, joinSession }: Props) => {
   let [fontsLoaded] = useFonts({
     'Raleway':                  require('./../assets/fonts/Raleway-Regular.ttf'),
     'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
@@ -61,17 +61,33 @@ const styles = StyleSheet.create({
     zIndex: 501,
     backgroundColor: '#3D144C',
     borderRadius: 5,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 6,
   },
   sessionOptionBottom: {
-    paddingTop: 40,
+    paddingTop: 30,
     paddingHorizontal: 20,
     position: 'absolute',
-    top: 30,
+    top: 25,
     left: 0,
     width: SCREEN_WIDTH - 50,
     zIndex: 500,
     backgroundColor: '#fff',
     borderRadius: 5,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+    elevation: 5,
   },
   sessionOptionTextTop: {
     fontFamily: 'Raleway-SemiBold',
@@ -86,6 +102,7 @@ const styles = StyleSheet.create({
   },
   sessionOptionTextBottom: {
     paddingVertical: 20,
+    paddingHorizontal: 30,
     fontFamily: 'Raleway',
     fontSize: 18,
     color: '#737373',
@@ -94,4 +111,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default StartPage;
+export default NewSessionOption;
