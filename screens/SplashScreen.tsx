@@ -36,7 +36,7 @@ const SplashScreen = () => {
           Swipe right on the foods you're interested in, and we'll find a match.
         </Text>
 
-        <View>
+        <View style={styles.start}>
           <Button
             title="Start swiping"
             onPress={() => navigation.navigate('Session')}
@@ -84,6 +84,9 @@ const styles = StyleSheet.create({
     padding: 10,
     height: '40%',
     resizeMode: 'center'
+  },
+  start: {
+    marginTop: 20,
   }
 });
 
