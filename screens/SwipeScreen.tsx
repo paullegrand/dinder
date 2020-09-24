@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
-import DinderGradient from '../components/DinderGradient';
-import LikeOrDislikeButton from '../components/LikeOrDislikeButton';
+
+import DinderGradient       from '../components/DinderGradient';
+import LikeOrDislikeButton  from '../components/LikeOrDislikeButton';
+import SwipeButtons         from '../components/SwipeButtons'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -134,6 +136,10 @@ const SwipeScreen = () => {
 
   return (
     <View style={styles.container}>
+
+      <SwipeButtons
+        currentIndex={currentIndex}
+      />
 
       {(foods[currentIndex]) &&
         <DinderGradient
