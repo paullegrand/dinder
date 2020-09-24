@@ -1,21 +1,23 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
+import { connect } from 'react-redux';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
 import LikeOrDislikeButton from '../components/LikeOrDislikeButton';
+// @ts-ignore: No declaration for .js file
+import { swipeRequested } from '../ducks/session';
+// @ts-ignore: No declaration for .js file
+import { selectFoodItems } from '../ducks/food';
+import { getFirebaseImageUrl } from '../utils/getFirebaseImageUrl'
+import { FoodItem } from '../models/FoodItem';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-// temporary until we incorporate Firebase
-const foods = [
-  { id: "1", uri: require('../assets/images/1.jpg') },
-  { id: "2", uri: require('../assets/images/2.jpg') },
-  { id: "3", uri: require('../assets/images/3.jpg') },
-  { id: "4", uri: require('../assets/images/4.jpg') },
-  { id: "5", uri: require('../assets/images/5.jpg') },
-]
+interface Props {
+  foodItems: Array<FoodItem>;
+  swipeFood: ({ key, swipedRight }: { key: string, swipedRight: boolean}) => void;
+}
 
-// TODO: connect redux so we can dispatch actions
-const SwipeScreen = () => {
+const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const pan = useRef(new Animated.ValueXY()).current
 
@@ -111,17 +113,20 @@ const SwipeScreen = () => {
     }
   })
 
+  // Pass this to whatever actually does the swiping
+  const handleSwipe = useCallback((key: string, currentValue: boolean) => swipeFood({ key, swipedRight: !currentValue }), [swipeFood])
+
   return (
     <View style={styles.container}>
-      {foods.map((food, i) => {
+      {foodItems && foodItems.map(({ key, name, emoji, flavorText, imageToken, colors }, i) => {
         if (i < currentIndex) return null
-
+        const source = { uri: getFirebaseImageUrl(key, imageToken) };
         // Current card in the stack
         if (i == currentIndex) {
           return (
             <Animated.View
               {...panResponder.panHandlers}
-              key={food.id}
+              key={key}
               style={{ ...styles.card, ...currentCardStyle }}
             >
               {/* Like button */}
@@ -142,7 +147,7 @@ const SwipeScreen = () => {
               > */}
               <Image
                 style={styles.image}
-                source={food.uri} />
+                source={source} />
               {/* </LinearGradient> */}
             </Animated.View>
           )
@@ -151,7 +156,7 @@ const SwipeScreen = () => {
         else {
           return (
             <Animated.View
-              key={food.id}
+              key={key}
               style={{ ...styles.card, ...nextCardStyle }}
             >
               {/* Hidden buttons, but... ready for later I guess? */}
@@ -163,7 +168,7 @@ const SwipeScreen = () => {
                 opacity={zeroOpacity} />
               <Image
                 style={styles.image}
-                source={food.uri} />
+                source={source} />
             </Animated.View>
           )
         }
@@ -189,4 +194,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SwipeScreen
+const mapStateToProps = (state: object) =>({
+  foodItems: selectFoodItems(state), 
+})
+
+const mapDispatchToProps = {
+  swipeFood: swipeRequested,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SwipeScreen)
