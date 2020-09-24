@@ -9,7 +9,12 @@ import { joinRequested, createRequested } from '../ducks/session';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const SessionScreen = ({ joinSession, createSession }) => {
+interface Props {
+  joinSession: (sessionId: string) => void;
+  createSession: () => void;
+}
+
+const SessionScreen = ({ joinSession, createSession }: Props) => {
   let [fontsLoaded] = useFonts({
     'Raleway-SemiBoldItalic': require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
   });
@@ -19,9 +24,8 @@ const SessionScreen = ({ joinSession, createSession }) => {
     createSession()
   }
 
-  // @TODO: call this somehow
-  const requestJoinSession = () => {
-    joinSession('ABCD')
+  const requestJoinSession = (sessionId: string) => {
+    joinSession(sessionId)
   }
 
   if (!fontsLoaded)
@@ -44,6 +48,7 @@ const SessionScreen = ({ joinSession, createSession }) => {
           isInput={true}
           topText={'_ _ _ _'}
           bottomText={'Enter the 4-letter code to join an existing group'}
+          joinSession={requestJoinSession}
         />
       </View>
 

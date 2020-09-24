@@ -5,18 +5,25 @@ import { Alert, Dimensions, StyleSheet, Text, TextInput, View } from 'react-nati
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const StartPage = (props) => {
+interface Props {
+  isInput: boolean;
+  topText: string;
+  bottomText: string;
+  joinSession?: (sessionId: string) => void;
+}
+
+const StartPage = ({ isInput, topText, bottomText, joinSession }: Props) => {
   let [fontsLoaded] = useFonts({
     'Raleway':                  require('./../assets/fonts/Raleway-Regular.ttf'),
     'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
   });
 
-  const onChangeText = (text: String) => {
+  const onChangeText = (text: string) => {
     // Make sure we're at a valid code before we try to do something
     if (text.length !== 4)
       return
-
-    Alert.alert(`Need to join session with ID: ${text}`)
+    if (joinSession !== undefined)
+      joinSession(text);
   }
 
   if (!fontsLoaded)
@@ -25,19 +32,19 @@ const StartPage = (props) => {
   return (
     <View>
       <View style={styles.sessionOptionTop}>
-        {props.isInput
+        {isInput
           ? <TextInput
               style={[styles.sessionOptionTextTop, styles.letterSpacingWide]}
               onChangeText={text => onChangeText(text)}
-              placeholder={props.topText}
+              placeholder={topText}
               placeholderTextColor={'#fff'}
             />
-          : <Text style={styles.sessionOptionTextTop}>{props.topText}</Text>
+          : <Text style={styles.sessionOptionTextTop}>{topText}</Text>
         }
       </View>
 
       <View style={styles.sessionOptionBottom}>
-        <Text style={styles.sessionOptionTextBottom}>{props.bottomText}</Text>
+        <Text style={styles.sessionOptionTextBottom}>{bottomText}</Text>
       </View>
     </View>
   )
