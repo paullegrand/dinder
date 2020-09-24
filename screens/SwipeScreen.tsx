@@ -84,7 +84,9 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
       // Swipe right
       if (gestureState.dx > 120) {
         Animated.spring(pan, {
-          toValue: { x: SCREEN_WIDTH + 120, y: gestureState.dy },
+          toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
+          restSpeedThreshold: 100,
+          restDisplacementThreshold: 200,
           useNativeDriver: true
         }).start(() => {
           // @TODO: Add logic for liking a food
@@ -96,6 +98,8 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
       else if (gestureState.dx < -120) {
         Animated.spring(pan, {
           toValue: { x: -SCREEN_WIDTH - 120, y: gestureState.dy },
+          restSpeedThreshold: 100,
+          restDisplacementThreshold: 200,
           useNativeDriver: true
         }).start(() => {
           // @TODO: Add logic for disliking a food
@@ -132,28 +136,55 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
         />
       }
 
-      {foodItems[currentIndex + 1] && (
-        // The "next" card to pre-render below the current card
-        <Animated.View style={{ ...styles.card, ...nextCardStyle }}>
-          <FoodCard
-            likeOpacity={zeroOpacity}
-            dislikeOpacity={zeroOpacity}
-            food={foodItems[currentIndex + 1]}
-          />
-        </Animated.View>
-      )}
+      {foodItems.map((foodItem, i) => {
+        if (i < currentIndex)
+          return null
 
-      {foodItems[currentIndex] && (
-        // The current card
-        <Animated.View style={{ ...styles.card, ...currentCardStyle }}>
-          <FoodCard
-            {...panResponder.panHandlers}
-            likeOpacity={likeOpacity}
-            dislikeOpacity={dislikeOpacity}
-            food={foodItems[currentIndex]}
-          />
-        </Animated.View>
-      )}
+        if (i == currentIndex) {
+          return (
+            // The current card
+            <Animated.View
+              {...panResponder.panHandlers}
+              key={foodItem.key}
+              style={{ ...styles.card, ...currentCardStyle }}
+            >
+              <FoodCard
+                likeOpacity={likeOpacity}
+                dislikeOpacity={dislikeOpacity}
+                food={foodItem}
+              />
+            </Animated.View>
+          )
+        } else if (i == currentIndex + 1) {
+          // The "next" card to pre-render below the current card
+          return (
+            <Animated.View
+              key={foodItem.key}
+              style={{ ...styles.card, ...nextCardStyle }}
+            >
+              <FoodCard
+                likeOpacity={zeroOpacity}
+                dislikeOpacity={zeroOpacity}
+                food={foodItem}
+              />
+            </Animated.View>
+          )
+        } else {
+          // Draw the remaining cards but with 0 opacity to preload the images
+          return (
+            <Animated.View
+              key={foodItem.key}
+              style={{ ...styles.card, ...{ opacity: 0 } }}
+            >
+              <FoodCard
+                likeOpacity={zeroOpacity}
+                dislikeOpacity={zeroOpacity}
+                food={foodItem}
+              />
+            </Animated.View>
+          )
+        }
+      }).reverse()}
     </View>
   );
 }
