@@ -31,8 +31,8 @@ export const SessionScreen = (props) => {
     }, 500)
   }
 
-  const setSessionId = (newSessionId:) => {
-    props.sessionHandler({ sessionId: newSessionId })
+  const setSessionId = (newSessionId: string) => {
+    props.sessionHandler(newSessionId)
   }
 
   if (!fontsLoaded)
