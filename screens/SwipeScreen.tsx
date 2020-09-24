@@ -15,7 +15,7 @@ const foods = [
 ]
 
 // TODO: connect redux so we can dispatch actions
-export const SwipeScreen = () => {
+const SwipeScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const pan = useRef(new Animated.ValueXY()).current
 
@@ -188,3 +188,5 @@ const styles = StyleSheet.create({
     width: 300,
   },
 });
+
+export default SwipeScreen

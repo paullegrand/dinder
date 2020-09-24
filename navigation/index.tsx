@@ -1,24 +1,31 @@
-import React, { useState } from 'react';
-import { SplashScreen } from '../screens/SplashScreen';
-import { SessionScreen } from '../screens/SessionScreen';
-import { SwipeScreen } from '../screens/SwipeScreen';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { selectSessionId } from '../ducks/session';
+import SplashScreen from '../screens/SplashScreen';
+import SessionScreen from '../screens/SessionScreen';
+import SwipeScreen from '../screens/SwipeScreen';
 
-// TODO: replace with react-navigation
-export const Navigation = () => {
-  const [sessionId, setSessionId] = useState(null)
-  const [showStart, setShowStart] = useState(true)
+const Stack = createStackNavigator();
 
-  // Initial state. Show the start page, and then choose session
-  if (!sessionId) {
-    // Show the start page? Or go to the choose session page?
-    if (showStart) {
-      return <SplashScreen startHandler={() => setShowStart(false)} />
-    } else {
-      return <SessionScreen sessionHandler={setSessionId} />
-    }
-  }
-  // Have a session ID... let's get swiping!
-  else {
-    return <SwipeScreen />;
-  }
+const Navigation = () => {
+  const sessionId = useSelector(selectSessionId)
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="Splash" component={SplashScreen} />
+        {!sessionId
+          ? <Stack.Screen name="Session" component={SessionScreen} />
+          : <Stack.Screen name="Swipe" component={SwipeScreen} />}
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 }
+
+export default Navigation

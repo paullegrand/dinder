@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { Text, StyleSheet, View, Button, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 
-export const SplashScreen = (props) => {
-  let [fontsLoaded] = useFonts({
-    'Sacramento':           require('./../assets/fonts/Sacramento.ttf'),
-    'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
-    'Raleway-LightItalic':  require('./../assets/fonts/Raleway-LightItalic.ttf')
+const SplashScreen = () => {
+  const navigation = useNavigation();
+
+  const [fontsLoaded] = useFonts({
+    'Sacramento': require('./../assets/fonts/Sacramento.ttf'),
+    'Raleway-SemiBold': require('./../assets/fonts/Raleway-SemiBold.ttf'),
+    'Raleway-LightItalic': require('./../assets/fonts/Raleway-LightItalic.ttf')
   });
-
-  let requestGetSession = () => {
-    props.startHandler()
-  }
 
   if (!fontsLoaded)
     return <AppLoading />
@@ -30,17 +29,17 @@ export const SplashScreen = (props) => {
         />
 
         <Text style={styles.subTitle}>
-            Dinner's decided.
+          Dinner's decided.
         </Text>
 
         <Text style={styles.subText}>
-            Swipe right on the foods you're interested in, and we'll find a match.
+          Swipe right on the foods you're interested in, and we'll find a match.
         </Text>
 
         <View>
           <Button
             title="Start swiping"
-            onPress={requestGetSession}
+            onPress={() => navigation.navigate('Session')}
           />
         </View>
       </View>
@@ -87,3 +86,5 @@ const styles = StyleSheet.create({
     resizeMode: 'center'
   }
 });
+
+export default SplashScreen

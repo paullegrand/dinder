@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Text, StyleSheet, View, Dimensions} from 'react-native';
+import React from 'react';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
