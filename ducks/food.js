@@ -41,10 +41,21 @@ export default handleActions(
 function* getFood() {
     try {
         const itemsAsObject = yield call(rsfDatabase.read, 'foods');
-        const items = Object.keys(itemsAsObject).map(item => ({
-            key: item,
-            ...itemsAsObject[item],
-        }));
+        const items = Object.keys(itemsAsObject).map(item => {
+            let colors;
+            if (itemsAsObject[item].colors !== undefined) {
+                colors = (itemsAsObject[item].colors)
+                    .replace(/\[|\]|'|\s+/g,'')
+                    .split(',')
+            } else {
+                colors = itemsAsObject[item].colors;
+            }
+            return ({
+                key: item,
+                ...itemsAsObject[item],
+                colors,
+            })
+        });
         yield put(getFoodSucceeded(items));
     } catch (error) {
         yield put(

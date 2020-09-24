@@ -1,13 +1,16 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
-import LikeOrDislikeButton from '../components/LikeOrDislikeButton';
 // @ts-ignore: No declaration for .js file
 import { swipeRequested } from '../ducks/session';
 // @ts-ignore: No declaration for .js file
 import { selectFoodItems } from '../ducks/food';
 import { getFirebaseImageUrl } from '../utils/getFirebaseImageUrl'
 import { FoodItem } from '../models/FoodItem';
+
+import DinderGradient       from '../components/DinderGradient';
+import LikeOrDislikeButton  from '../components/LikeOrDislikeButton';
+import SwipeButtons         from '../components/SwipeButtons'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -118,9 +121,23 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
 
   return (
     <View style={styles.container}>
+      <SwipeButtons
+        currentIndex={currentIndex}
+      />
+
+      {foodItems && foodItems.length > 0 && (foodItems[currentIndex]) &&
+        <DinderGradient
+          colors={foodItems[currentIndex].colors}
+          style={{
+            flex: 1
+          }}
+        />
+      }
+      
       {foodItems && foodItems.map(({ key, name, emoji, flavorText, imageToken, colors }, i) => {
         if (i < currentIndex) return null
         const source = { uri: getFirebaseImageUrl(key, imageToken) };
+
         // Current card in the stack
         if (i == currentIndex) {
           return (
@@ -137,18 +154,9 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
               <LikeOrDislikeButton
                 isLikeButton={false}
                 opacity={dislikeOpacity} />
-              {/* <LinearGradient
-                colors={[
-                  'red',
-                  'yellow',
-                  'green'
-                ]}
-                style={styles.LinearGradient}
-              > */}
               <Image
                 style={styles.image}
                 source={source} />
-              {/* </LinearGradient> */}
             </Animated.View>
           )
         }

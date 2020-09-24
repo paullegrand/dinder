@@ -8,5 +8,8 @@ yarn-error.log*
 # Dependency directories
 node_modules/
 
+# Images
+images/
+
 # Expo
 .expo
