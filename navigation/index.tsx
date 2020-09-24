@@ -19,9 +19,13 @@ const Navigation = () => {
           headerShown: false
         }}
       >
-        <Stack.Screen name="Splash" component={SplashScreen} />
         {!sessionId
-          ? <Stack.Screen name="Session" component={SessionScreen} />
+          ? (
+            <>
+              <Stack.Screen name="Splash" component={SplashScreen} />
+              <Stack.Screen name="Session" component={SessionScreen} />
+            </>
+          )
           : <Stack.Screen name="Swipe" component={SwipeScreen} />}
       </Stack.Navigator>
     </NavigationContainer>

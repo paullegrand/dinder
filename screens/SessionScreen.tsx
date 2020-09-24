@@ -1,36 +1,27 @@
 import React from 'react';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
+import { connect } from 'react-redux';
 import { Alert, Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import DinderGradient from '../components/DinderGradient';
 import NewSessionOption from '../components/NewSessionOption';
+import { joinRequested, createRequested } from '../ducks/session';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
-const SessionScreen = (props) => {
+const SessionScreen = ({ joinSession, createSession }) => {
   let [fontsLoaded] = useFonts({
-    'Raleway-SemiBoldItalic':   require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
+    'Raleway-SemiBoldItalic': require('./../assets/fonts/Raleway-SemiBoldItalic.ttf')
   });
 
+  // @TODO: show the user the code so they can share it before continuing
   const requestNewSession = () => {
-    Alert.alert('Requesting to start a new session!')
-
-    setTimeout(() => {
-      setSessionId('newSessionId')
-    }, 1000)
+    createSession()
   }
 
+  // @TODO: call this somehow
   const requestJoinSession = () => {
-    Alert.alert('Requesting to join a session!')
-
-    // @TODO: Ask the user for input, and then verify that session exists before joining it
-    setTimeout(() => {
-      setSessionId('joiningSession')
-    }, 500)
-  }
-
-  const setSessionId = (newSessionId: string) => {
-    props.sessionHandler(newSessionId)
+    joinSession('ABCD')
   }
 
   if (!fontsLoaded)
@@ -83,7 +74,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     textShadowColor: 'rgba(0, 0, 0, 0.25)',
-    textShadowOffset: {width: -1, height: 1},
+    textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
   },
   sessionOptionContainer: {
@@ -95,4 +86,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SessionScreen
+const mapDispatchToProps = {
+  joinSession: joinRequested,
+  createSession: createRequested,
+}
+
+export default connect(null, mapDispatchToProps)(SessionScreen)
