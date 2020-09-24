@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { connect } from 'react-redux';
@@ -21,13 +21,13 @@ const SessionScreen = ({ joinSession, createSession }: Props) => {
   });
 
   // @TODO: show the user the code so they can share it before continuing
-  const requestNewSession = () => {
+  const requestNewSession = useCallback(() => {
     createSession()
-  }
+  }, [createSession])
 
-  const requestJoinSession = (sessionId: string) => {
+  const requestJoinSession = useCallback((sessionId: string) => {
     joinSession(sessionId)
-  }
+  }, [joinSession])
 
   if (!fontsLoaded)
     return <AppLoading />

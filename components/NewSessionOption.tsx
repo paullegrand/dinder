@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
 import { Alert, Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -18,13 +18,13 @@ const StartPage = ({ isInput, topText, bottomText, joinSession }: Props) => {
     'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
   });
 
-  const onChangeText = (text: string) => {
+  const onChangeText = useCallback((text: string) => {
     // Make sure we're at a valid code before we try to do something
     if (text.length !== 4)
       return
     if (joinSession !== undefined)
       joinSession(text);
-  }
+  }, [joinSession])
 
   if (!fontsLoaded)
     return <AppLoading />
