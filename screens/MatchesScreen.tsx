@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 // @ts-ignore: No declaration for .js file
 import { selectSession } from '../ducks/session';
 // @ts-ignore: No declaration for .js file
@@ -32,7 +32,7 @@ const MatchesScreen = ({ foodItems, session }: Props) => {
 
   return (
     <View>
-      Matches!
+      <Text>Matches!</Text>
     </View>
   );
 }

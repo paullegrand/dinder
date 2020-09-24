@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, View } from 'react-native';
 import FoodCard from '../components/FoodCard';
@@ -15,12 +15,20 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 interface Props {
   foodItems: Array<FoodItem>;
+  onSwipingComplete: () => void;
   swipeFood: ({ key, swipedRight }: { key: string, swipedRight: boolean }) => void;
 }
 
-const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
+const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const pan = useRef(new Animated.ValueXY()).current
+
+  // Hacky way of detecting when the user is done swiping
+  useEffect(() => {
+    if (currentIndex > foodItems.length - 1) {
+      onSwipingComplete()
+    }
+  }, [currentIndex])
 
   const currentCardStyle = {
     transform: [
@@ -89,7 +97,7 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
           restDisplacementThreshold: 200,
           useNativeDriver: true
         }).start(() => {
-          // @TODO: Add logic for liking a food
+          handleSwipe(foodItems[currentIndex].key, true)
           setCurrentIndex(currentIndex + 1)
           pan.setValue({ x: 0, y: 0 })
         })
@@ -102,7 +110,7 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
           restDisplacementThreshold: 200,
           useNativeDriver: true
         }).start(() => {
-          // @TODO: Add logic for disliking a food
+          handleSwipe(foodItems[currentIndex].key, false)
           setCurrentIndex(currentIndex + 1)
           pan.setValue({ x: 0, y: 0 })
         })
@@ -118,8 +126,7 @@ const SwipeScreen = ({ foodItems, swipeFood }: Props) => {
     }
   })
 
-  // Pass this to whatever actually does the swiping
-  const handleSwipe = useCallback((key: string, currentValue: boolean) => swipeFood({ key, swipedRight: !currentValue }), [swipeFood])
+  const handleSwipe = useCallback((key: string, swipedRight: boolean) => swipeFood({ key, swipedRight }), [swipeFood])
 
   return (
     <View style={styles.container}>
