@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppLoading } from 'expo';
 import { useFonts } from 'expo-font';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Alert, Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -11,13 +11,29 @@ const StartPage = (props) => {
     'Raleway-SemiBold':     require('./../assets/fonts/Raleway-SemiBold.ttf'),
   });
 
+  const onChangeText = (text: String) => {
+    // Make sure we're at a valid code before we try to do something
+    if (text.length !== 4)
+      return
+
+    Alert.alert(`Need to join session with ID: ${text}`)
+  }
+
   if (!fontsLoaded)
     return <AppLoading />
 
   return (
     <View>
       <View style={styles.sessionOptionTop}>
-        <Text style={styles.sessionOptionTextTop}>{props.topText}</Text>
+        {props.isInput
+          ? <TextInput
+              style={[styles.sessionOptionTextTop, styles.letterSpacingWide]}
+              onChangeText={text => onChangeText(text)}
+              placeholder={props.topText}
+              placeholderTextColor={'#fff'}
+            />
+          : <Text style={styles.sessionOptionTextTop}>{props.topText}</Text>
+        }
       </View>
 
       <View style={styles.sessionOptionBottom}>
@@ -57,6 +73,9 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     textAlign: 'center',
     textAlignVertical: 'bottom',
+  },
+  letterSpacingWide: {
+    letterSpacing: 5,
   },
   sessionOptionTextBottom: {
     paddingVertical: 20,

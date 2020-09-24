@@ -48,21 +48,25 @@ const SessionScreen = (props) => {
         <Text style={styles.header}>Choose one.</Text>
       </View>
 
-      <TouchableHighlight
+      {/* <TouchableHighlight
         style={styles.sessionOptionContainer}
         onPress={requestJoinSession}
-      >
+      > */}
+      <View style={styles.sessionOptionContainer}>
         <NewSessionOption
+          isInput={true}
           topText={'_ _ _ _'}
           bottomText={'Enter the 4-letter code to join an existing group'}
         />
-      </TouchableHighlight>
+      </View>
+      {/* </TouchableHighlight> */}
 
       <TouchableHighlight
         style={styles.sessionOptionContainer}
         onPress={requestNewSession}
       >
         <NewSessionOption
+          isInput={false}
           topText={'Create Group'}
           bottomText={'Create a new group and invite your friends'}
         />
