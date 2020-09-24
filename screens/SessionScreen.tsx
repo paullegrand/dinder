@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Alert, Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import DinderGradient from '../components/DinderGradient';
 import NewSessionOption from '../components/NewSessionOption';
+// @ts-ignore: No declaration for .js file
 import { joinRequested, createRequested } from '../ducks/session';
 
 const SCREEN_WIDTH = Dimensions.get('window').width
