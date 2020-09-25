@@ -89,32 +89,11 @@ const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
     ], { useNativeDriver: false }),
 
     onPanResponderRelease: (_evt, gestureState) => {
-      // Swipe right
       if (gestureState.dx > 120) {
-        Animated.spring(pan, {
-          toValue: { x: SCREEN_WIDTH + 100, y: gestureState.dy },
-          restSpeedThreshold: 100,
-          restDisplacementThreshold: 200,
-          useNativeDriver: true
-        }).start(() => {
-          handleSwipe(true)
-          pan.setValue({ x: 0, y: 0 })
-        })
-      }
-      // Swipe left
-      else if (gestureState.dx < -120) {
-        Animated.spring(pan, {
-          toValue: { x: -SCREEN_WIDTH - 120, y: gestureState.dy },
-          restSpeedThreshold: 100,
-          restDisplacementThreshold: 200,
-          useNativeDriver: true
-        }).start(() => {
-          handleSwipe(false)
-          pan.setValue({ x: 0, y: 0 })
-        })
-      }
-      // Release the card
-      else {
+        handleSwipe(true, gestureState.dy)
+      } else if (gestureState.dx < -120) {
+        handleSwipe(false, gestureState.dy)
+      } else {
         Animated.spring(pan, {
           toValue: { x: 0, y: 0 },
           friction: 4,
@@ -124,12 +103,23 @@ const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
     }
   })
 
-  const handleSwipe = useCallback((swipedRight: boolean) => {
-    if (foodItems && foodItems[currentIndex]) {
-      swipeFood({ key: foodItems[currentIndex].key, swipedRight })
-      setCurrentIndex(currentIndex + 1)
-    }
-  }, [swipeFood,currentIndex, setCurrentIndex])
+  const handleSwipe = useCallback((swipedRight: boolean, dy?: number) => {
+    const x = swipedRight ? SCREEN_WIDTH + 100 : -SCREEN_WIDTH - 120
+    const y = dy || -(SCREEN_HEIGHT / 3)
+
+    Animated.spring(pan, {
+      toValue: { x, y },
+      restSpeedThreshold: 100,
+      restDisplacementThreshold: 200,
+      useNativeDriver: true
+    }).start(() => {
+      if (foodItems && foodItems[currentIndex]) {
+        swipeFood({ key: foodItems[currentIndex].key, swipedRight })
+        setCurrentIndex(currentIndex + 1)
+      }
+      pan.setValue({ x: 0, y: 0 })
+    })
+  }, [swipeFood, currentIndex, pan])
 
   const handleRewind = useCallback(() => {
     if (currentIndex > 0) {
@@ -141,20 +131,21 @@ const SwipeScreen = ({ foodItems, onSwipingComplete, swipeFood }: Props) => {
 
   return (
     <View style={styles.container}>
-      <SwipeButtons
-        currentIndex={currentIndex}
-        onSwipe={handleSwipe}
-        onRewind={handleRewind}
-      />
-
-      {foodItems && foodItems.length > 0 && (foodItems[currentIndex]) &&
-        <DinderGradient
-          colors={foodItems[currentIndex].colors}
-          style={{
-            flex: 1
-          }}
-        />
-      }
+      {foodItems && foodItems.length > 0 && (foodItems[currentIndex]) && (
+        <>
+          <SwipeButtons
+            currentIndex={currentIndex}
+            onSwipe={handleSwipe}
+            onRewind={handleRewind}
+          />
+          <DinderGradient
+            colors={foodItems[currentIndex].colors}
+            style={{
+              flex: 1
+            }}
+          />
+        </>
+      )}
 
       {foodItems.map((foodItem, i) => {
         if (i < currentIndex)
