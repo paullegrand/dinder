@@ -4,4 +4,5 @@ export interface Session {
       [user: string]: boolean;
     };
   };
+  users: string[];
 }
