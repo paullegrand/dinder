@@ -1,7 +1,6 @@
-const { default: Axios } = require('axios')
 const firebase    = require('firebase/app')
 const GetColors   = require('get-image-colors')
-const axios       = require('axios')
+const Axios       = require('axios')
 const fs          = require('fs')
 
 require('firebase/database')
